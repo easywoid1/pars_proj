@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from aiogram import Bot, Dispatcher
 
 from config import TOKEN, logger
-
+from db.models import db_helper, Base
 
 from routers import router as main_router
 
@@ -12,8 +12,14 @@ dp = Dispatcher()
 dp.include_router(main_router)
 
 
+async def init_db():
+    async with db_helper.engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    yield
+
 async def main():
-    logger.info('bot start')
+    logger.info("bot start")
     bot = Bot(token=TOKEN)
     await dp.start_polling(bot)
 
