@@ -13,6 +13,7 @@
 .idea/**/dictionaries
 .idea/**/shelf
 /bot/debug.log
+/core/config.py
 # AWS User-specific
 .idea/**/aws.xml
 
