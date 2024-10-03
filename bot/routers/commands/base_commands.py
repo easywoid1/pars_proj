@@ -14,8 +14,8 @@ def get_start_keyboard():
     button_news_hour = KeyboardButton(text=Buttons_text.last_hour_news)
     buttons_first_row = [button_hello]
     buttons_second_row = [button_help]
-    buttons_third_row = [button_help]
-    buttons_fourth_row = [button_help]
+    buttons_third_row = [button_news_hour]
+    buttons_fourth_row = [button_news_day]
     markup = ReplyKeyboardMarkup(
         keyboard=[buttons_first_row, buttons_second_row, buttons_third_row, buttons_fourth_row])
     return markup
