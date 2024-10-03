@@ -4,9 +4,7 @@ from core.config import settings
 
 
 class DataBaseHelper:
-    def __init__(self,
-                 url: str,
-                 echo: bool=False):
+    def __init__(self, url: str, echo: bool = False):
         self.engine = create_async_engine(
             url=url,
             echo=echo,
@@ -19,5 +17,4 @@ class DataBaseHelper:
         )
 
 
-db_helper = DataBaseHelper(url=settings.db_url,
-                           echo=settings.db_echo)
+db_helper = DataBaseHelper(url=settings.db_url, echo=settings.db_echo)

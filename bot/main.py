@@ -19,8 +19,10 @@ async def init_db():
     yield
 
 async def main():
-    logger.info("bot start")
+    await init_db()
+    logger.add("db is start", level="info")
     bot = Bot(token=TOKEN)
+    logger.info("bot start")
     await dp.start_polling(bot)
 
 
