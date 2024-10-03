@@ -719,7 +719,8 @@ files = [
 ]
 
 [package.dependencies]
-greenlet = {version = "!=0.4.17", markers = "python_version < \"3.13\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")"}
+asyncpg = {version = "*", optional = true, markers = "extra == \"postgresql-asyncpg\""}
+greenlet = {version = "!=0.4.17", optional = true, markers = "python_version < \"3.13\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\") or extra == \"postgresql-asyncpg\""}
 typing-extensions = ">=4.6.0"
 
 [package.extras]
@@ -880,4 +881,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "af00472a60ee679e9e9fe85355f320c903c6bf9b613d5f4d8e8b0883079a2637"
+content-hash = "2c11cee9d8006db0d51fe40f9ffeaf07b501a0719f1ffbd4d99dd530b3e649ba"
