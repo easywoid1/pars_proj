@@ -1,21 +1,19 @@
 import asyncio
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher
 
 from config import TOKEN, logger
 
-bot = Bot(token=TOKEN)
+
+from routers import router as main_router
+
 dp = Dispatcher()
-
-
-@dp.message()
-async def get_message(message: types.Message):
-    logger.info(f'message:{message.text}| user_id: {message.from_user.id} | {message.from_user.username}')
-    await message.reply(text="Пожалуйста используйте кнопки-команды для управления ботом")
+dp.include_router(main_router)
 
 
 async def main():
     logger.info('bot start')
+    bot = Bot(token=TOKEN)
     await dp.start_polling(bot)
 
 
