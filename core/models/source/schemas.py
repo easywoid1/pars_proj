@@ -2,9 +2,10 @@ from pydantic import BaseModel
 
 
 class SourceBase(BaseModel):
-    name: str
     url: str
 
+class SourceCreate(BaseModel):
+    pass
 
 class Source(SourceBase):
     id: int

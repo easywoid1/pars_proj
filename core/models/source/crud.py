@@ -6,10 +6,25 @@ Delete"""
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.models.source import Source
 
-async def get_sources(session: AsyncSession)-> list[Source]:
+from core.models.source.schemas import SourceCreate
+from db.models import Source
+
+
+async def get_sources(session: AsyncSession) -> list[Source]:
     stmt = select(Source).order_by(Source.id)
     result: Result = await session.execute(stmt)
-    sources =  result.scalars().all()
+    sources = result.scalars().all()
     return list(sources)
+
+
+async def get_source(session: AsyncSession, source_id: int) -> Source | None:
+    return await session.get(Source, source_id)
+
+
+async def add_source(session: AsyncSession, source_in: SourceCreate) -> Source:
+    source = Source(**source_in.model_dump())
+    session.add(source)
+    await session.commit()
+    await session.refresh(source)
+    return source
