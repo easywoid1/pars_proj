@@ -1,5 +1,4 @@
 import asyncio
-from contextlib import asynccontextmanager
 
 from aiogram import Bot, Dispatcher
 
@@ -13,14 +12,18 @@ dp.include_router(main_router)
 
 
 async def init_db():
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        async with db_helper.engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            logger.info("База данных инициализирована")
+    except Exception as e:
+        logger.error(f"Ошибка инициализации базы данных: {e}")
+        raise
 
-    yield
 
 async def main():
     await init_db()
-    logger.add("db is start", level="info")
+    logger.info("db is start")
     bot = Bot(token=TOKEN)
     logger.info("bot start")
     await dp.start_polling(bot)
