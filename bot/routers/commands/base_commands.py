@@ -1,6 +1,7 @@
-from aiogram import Router, types
+from aiogram import Router, types, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from click import BaseCommand
 
 from bot.bot_models import Buttons_text
 
@@ -28,6 +29,7 @@ def get_start_keyboard():
     return markup
 
 
+@router.message(F.text == Buttons_text.hello)
 @router.message(CommandStart())
 async def handle_start(message: types.Message):
     await message.answer(
@@ -36,7 +38,8 @@ async def handle_start(message: types.Message):
     )
 
 
-@router.message(Command("help", prefix="!/"))
+@router.message(F.text == Buttons_text.help)
+@router.message(Command(Buttons_text.help))
 async def halndle_help(message: types.Message):
     await message.answer(
         text=f"Если есть какие-то вопросы по работе бота https://t.me/ALGGAL"

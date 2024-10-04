@@ -1,4 +1,4 @@
-from aiogram import Router, types
+from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
@@ -8,7 +8,8 @@ from bot.bot_models import Buttons_text, FSMFillForm
 router = Router(name=__name__)
 
 
-@router.message(Command(Buttons_text.add_source, prefix="!/"))
+@router.message(F.text == Buttons_text.add_source)
+@router.message(Command(Buttons_text.add_source))
 async def add_source(message: types.Message):
     await message.answer(text="Чтобы добавить URL, отправьте команду /fillurl")
 
