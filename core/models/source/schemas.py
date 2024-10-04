@@ -1,11 +1,10 @@
 from pydantic import BaseModel
 
 
-class SourceListBase(BaseModel):
+class SourceBase(BaseModel):
     name: str
     url: str
-    news_datetime: str
 
 
-class SourceList(SourceListBase):
+class Source(SourceBase):
     id: int
