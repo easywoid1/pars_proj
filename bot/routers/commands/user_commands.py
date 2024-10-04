@@ -1,6 +1,6 @@
 from aiogram import Router, types
 from aiogram.filters import CommandStart, Command
-from bot.models import Buttons_text
+from bot.bot_models import Buttons_text
 
 router = Router(name=__name__)
 

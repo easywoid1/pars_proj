@@ -2,7 +2,7 @@ from aiogram import Router, types
 from aiogram.filters import CommandStart, Command
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from bot.models import Buttons_text
+from bot.bot_models import Buttons_text
 
 router = Router(name=__name__)
 
