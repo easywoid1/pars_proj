@@ -6,3 +6,4 @@ from .base import Base
 class SourceList(Base):
     name: Mapped[str]
     url: Mapped[str]
+    datetime: Mapped[str]
