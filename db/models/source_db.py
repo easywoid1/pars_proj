@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
 
 
 class Source(Base):
-    url: Mapped[str]
+    __tablename__ = "sources"
+    url: Mapped[str] = mapped_column(unique=True, nullable=False)

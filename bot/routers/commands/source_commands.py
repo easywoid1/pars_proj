@@ -2,6 +2,8 @@ from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
+from sqlalchemy.exc import IntegrityError
+
 #
 from bot.bot_models import Buttons_text, FSMFillForm, add_source_to_db
 from db.models import db_helper
@@ -59,11 +61,17 @@ async def process_url_sent(message: types.Message, state: FSMContext):
         )
     if http_ok and dot_ok:
         await state.update_data(url=url)
-        await message.answer(text="Спасибо! Ваш URL сохранен.")
 
         session = db_helper.get_scoped_session()
         try:
             await add_source_to_db(url=url, session=session)
+            await message.answer(text="Спасибо! Ваш URL сохранен.")
+        except IntegrityError as e:
+            await session.rollback()
+            await message.answer(
+                text="Извините! Данный URL уже сохранен в списке источников"
+            )
+
         finally:
             await session.remove()
 
