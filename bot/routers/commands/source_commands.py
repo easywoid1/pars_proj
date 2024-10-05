@@ -31,23 +31,19 @@ async def process_cancel_command_state(message: types.Message, state: FSMContext
         "Чтобы снова перейти к заполнению URL - "
         "отправьте команду /fillurl"
     )
-    # Сбрасываем состояние и очищаем данные, полученные внутри состояний
     await state.clear()
 
 
 @router.message(Command(commands="fillurl"), StateFilter(default_state))
 async def process_fillurl_command(message: types.Message, state: FSMContext):
     await message.answer(text="Пожалуйста, введите URL источника")
-    # Устанавливаем состояние ожидания ввода URL
     await state.set_state(FSMFillForm.fill_url)
 
 
 @router.message(StateFilter(FSMFillForm.fill_url))
 async def process_url_sent(message: types.Message, state: FSMContext):
     url = message.text.strip()
-    # Здесь можно добавить проверку на корректность URL
     if url.startswith("http://") or url.startswith("https://"):
-        # Сохраняем URL в "базу данных" или в контексте
         http_ok = True
     else:
         http_ok = False
@@ -67,13 +63,10 @@ async def process_url_sent(message: types.Message, state: FSMContext):
 
         session = db_helper.get_scoped_session()
         try:
-            # Добавляем источник в базу данных
             await add_source_to_db(url=url, session=session)
         finally:
-            # Закрываем сессию
             await session.remove()
 
-        # Завершаем машину состояний
         await state.clear()
 
 
