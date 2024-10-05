@@ -47,54 +47,40 @@ async def process_fillurl_command(message: types.Message, state: FSMContext):
 @router.message(StateFilter(FSMFillForm.fill_url))
 async def process_url_sent(message: types.Message, state: FSMContext):
     url = message.text.strip()
-    if url.startswith("http://") or url.startswith("https://"):
-        http_ok = True
-    else:
-        http_ok = False
-        await message.answer(
-            text="Пожалуйста, введите корректный URL, начинающийся с http:// или https://"
-        )
-    if url.find(".") != -1:
-        dot_ok = True
-    else:
-        dot_ok = False
-        await message.answer(
-            text='Пожалуйста, введите корректный URL, имеющий точку перед доменом, например ".com"'
-        )
-    connection_is_ok = False
-    if http_ok and dot_ok:
+
+    async with aiohttp.ClientSession() as session:
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        connection_is_ok = True
-                        print("connection is ok")
+            async with session.get(url) as response:
+                response.raise_for_status()  # Проверка статуса
+                await state.update_data(url=url)  # Сохранение URL
+
+                # Сохранение в базу данных
+                db_session = db_helper.get_scoped_session()
+                try:
+                    await add_source_to_db(url=url, session=db_session)
+                    await message.answer(text="Спасибо! Ваш URL сохранен.")
+                    logger.info(
+                        f"User_id {message.from_user.id} | nickname {message.from_user.username} | добавил источник {url}"
+                    )
+                except IntegrityError:
+                    await db_session.rollback()
+                    await message.answer(text="Извините! Данный URL уже сохранен в списке источников.")
+                finally:
+                    await db_session.remove()
+
+                await state.clear()  # Очистка состояния
+
         except aiohttp.ClientResponseError as e:
             logger.error(f"Неверный URL, ошибка: {e}")
             await message.answer(
-                text="Не удалось отправить запрос на данный URL, пожалуйста проверьте ссылку"
+                text=f"Не удалось отправить запрос на данный URL, пожалуйста проверьте ссылку. Ошибка: {e}"
             )
-
-    if http_ok and dot_ok and connection_is_ok:
-        await state.update_data(url=url)
-
-        session = db_helper.get_scoped_session()
-        try:
-            await add_source_to_db(url=url, session=session)
-            await message.answer(text="Спасибо! Ваш URL сохранен.")
-            logger.info(
-                f"User_id {message.from_user.id} | nickname {message.from_user.username} | добавил источник {url}"
-            )
-        except IntegrityError as e:
-            await session.rollback()
+        except Exception as e:
+            logger.error(f"Ошибка при обработке URL: {e}")
             await message.answer(
-                text="Извините! Данный URL уже сохранен в списке источников"
+                text="Произошла ошибка при обработке вашего запроса. Выйти: /cancel"
             )
 
-        finally:
-            await session.remove()
-
-        await state.clear()
 
 
 @router.message(StateFilter(FSMFillForm.fill_url))
