@@ -3,11 +3,8 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 #
-# from core.models import Source
-# from core.models.source.crud import add_source as add_source_to_db
-from bot.bot_models import Buttons_text, FSMFillForm
-# from core.models.source.schemas import SourceCreate
-# from db.models.db_helper import db_helper
+from bot.bot_models import Buttons_text, FSMFillForm, add_source_to_db
+from db.models import db_helper
 
 router = Router(name=__name__)
 
@@ -67,8 +64,15 @@ async def process_url_sent(message: types.Message, state: FSMContext):
     if http_ok and dot_ok:
         await state.update_data(url=url)
         await message.answer(text="Спасибо! Ваш URL сохранен.")
-        # new_source = SourceCreate(url=url)
-        # await add_source_to_db(source_in=new_source)
+
+        session = db_helper.get_scoped_session()
+        try:
+            # Добавляем источник в базу данных
+            await add_source_to_db(url=url, session=session)
+        finally:
+            # Закрываем сессию
+            await session.remove()
+
         # Завершаем машину состояний
         await state.clear()
 

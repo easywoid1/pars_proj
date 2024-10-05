@@ -1,4 +1,8 @@
 from aiogram.fsm.state import StatesGroup, State
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core import SourceCreate
+from core.models.source.crud import add_source
 
 
 class Buttons_text:
@@ -11,3 +15,8 @@ class Buttons_text:
 
 class FSMFillForm(StatesGroup):
     fill_url = State()  # Состояние ожидания ввода url
+
+
+async def add_source_to_db(url: str, session: AsyncSession):
+    new_source = SourceCreate(url=url)
+    await add_source(source_in=new_source, session=session)

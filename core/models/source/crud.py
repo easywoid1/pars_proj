@@ -23,7 +23,10 @@ async def get_source(session: AsyncSession, source_id: int) -> Source | None:
     return await session.get(Source, source_id)
 
 
-async def add_source(session: db_helper.session_dependency(), source_in: SourceCreate) -> Source:
+async def add_source(
+    source_in: SourceCreate,
+    session: AsyncSession = db_helper.session_dependency,
+) -> Source:
     source = Source(**source_in.model_dump())
     session.add(source)
     await session.commit()
