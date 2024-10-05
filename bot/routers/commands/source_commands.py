@@ -3,6 +3,8 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from sqlalchemy.exc import IntegrityError
+import aiohttp
+from bot.config import logger
 
 #
 from bot.bot_models import Buttons_text, FSMFillForm, add_source_to_db
@@ -59,13 +61,30 @@ async def process_url_sent(message: types.Message, state: FSMContext):
         await message.answer(
             text='Пожалуйста, введите корректный URL, имеющий точку перед доменом, например ".com"'
         )
+    connection_is_ok = False
     if http_ok and dot_ok:
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        connection_is_ok = True
+                        print("connection is ok")
+        except aiohttp.ClientResponseError as e:
+            logger.error(f"Неверный URL, ошибка: {e}")
+            await message.answer(
+                text="Не удалось отправить запрос на данный URL, пожалуйста проверьте ссылку"
+            )
+
+    if http_ok and dot_ok and connection_is_ok:
         await state.update_data(url=url)
 
         session = db_helper.get_scoped_session()
         try:
             await add_source_to_db(url=url, session=session)
             await message.answer(text="Спасибо! Ваш URL сохранен.")
+            logger.info(
+                f"User_id {message.from_user.id} | nickname {message.from_user.username} | добавил источник {url}"
+            )
         except IntegrityError as e:
             await session.rollback()
             await message.answer(

@@ -10,13 +10,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models.source.schemas import SourceCreate
 from db.models import Source
 from db.models.db_helper import db_helper
+from bot.config import logger
+
+from sqlalchemy.exc import SQLAlchemyError
 
 
-async def get_sources(session: AsyncSession) -> list[Source]:
-    stmt = select(Source).order_by(Source.id)
-    result: Result = await session.execute(stmt)
-    sources = result.scalars().all()
-    return list(sources)
+async def get_sources(
+    session: AsyncSession = db_helper.session_dependency,
+) -> list[Source]:
+    try:
+        stmt = select(Source).order_by(Source.id)
+        result: Result = await session.execute(stmt)
+        sources = result.scalars().all()
+        return list(sources)
+    except SQLAlchemyError as e:
+        logger.error(f"Ошибка при выполнении запроса: {e}")
+        raise
 
 
 async def get_source(session: AsyncSession, source_id: int) -> Source | None:
