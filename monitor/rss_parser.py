@@ -1,3 +1,5 @@
+from datetime import datetime
+from email.utils import parsedate_to_datetime
 import aiohttp
 import feedparser
 import asyncio
@@ -38,6 +40,14 @@ async def add_news_to_db(new_in: NewsCreate):
     finally:
         await db_session.close()
 
+async def str_time_to_datetime(published:str)->datetime:
+    try:
+        dt = parsedate_to_datetime(published).astimezone(datetime.now().astimezone().tzinfo)
+        formated_dt = dt.strftime('%Y-%m-%d %H:%M:%S')
+        return formated_dt
+    except Exception as e:
+        raise ValueError(f"Invalid date format: {published}") from e
+
 
 async def run():
 
@@ -49,7 +59,7 @@ async def run():
         for article in parsed_response.entries:
             # print(type(article.title))
             new_in = NewsCreate(
-                name=article.title, url=article.link, created_at=article.published
+                name=article.title, url=article.link, created_at=await str_time_to_datetime(article.published)
             )
             print(
                 f"{type(new_in)} | {new_in.name} | {new_in.url} | {new_in.created_at}"
