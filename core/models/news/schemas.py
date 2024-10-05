@@ -6,6 +6,9 @@ class NewsBase(BaseModel):
     url: str
     created_at: str
 
+class NewsCreate(NewsBase):
+    pass
 
-class News_obj(NewsBase):
+
+class News(NewsBase):
     id: int

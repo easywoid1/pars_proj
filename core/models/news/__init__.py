@@ -1,3 +1,3 @@
-__all__ = ("News_obj",)
+__all__ = ("News",)
 
-from .schemas import News_obj
+from .schemas import News

@@ -1,10 +1,10 @@
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
 
 
 class News(Base):
     __tablename__ = "news"
-    description: Mapped[str]
-    url: Mapped[str]
-    created_at: Mapped[str]
+    name: Mapped[str] = mapped_column(nullable=True)
+    url: Mapped[str] = mapped_column(unique=True, nullable=False)
+    created_at: Mapped[str] = mapped_column(nullable=True)
