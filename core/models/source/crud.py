@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.source.schemas import SourceCreate
 from db.models import Source
+from db.models.db_helper import db_helper
 
 
 async def get_sources(session: AsyncSession) -> list[Source]:
@@ -22,7 +23,7 @@ async def get_source(session: AsyncSession, source_id: int) -> Source | None:
     return await session.get(Source, source_id)
 
 
-async def add_source(session: AsyncSession, source_in: SourceCreate) -> Source:
+async def add_source(session: db_helper.session_dependency(), source_in: SourceCreate) -> Source:
     source = Source(**source_in.model_dump())
     session.add(source)
     await session.commit()

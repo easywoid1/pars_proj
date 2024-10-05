@@ -2,8 +2,12 @@ from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-
+#
+# from core.models import Source
+# from core.models.source.crud import add_source as add_source_to_db
 from bot.bot_models import Buttons_text, FSMFillForm
+# from core.models.source.schemas import SourceCreate
+# from db.models.db_helper import db_helper
 
 router = Router(name=__name__)
 
@@ -47,14 +51,26 @@ async def process_url_sent(message: types.Message, state: FSMContext):
     # Здесь можно добавить проверку на корректность URL
     if url.startswith("http://") or url.startswith("https://"):
         # Сохраняем URL в "базу данных" или в контексте
-        await state.update_data(url=url)
-        await message.answer(text="Спасибо! Ваш URL сохранен.")
-        # Завершаем машину состояний
-        await state.clear()
+        http_ok = True
     else:
+        http_ok = False
         await message.answer(
             text="Пожалуйста, введите корректный URL, начинающийся с http:// или https://"
         )
+    if url.find(".") != -1:
+        dot_ok = True
+    else:
+        dot_ok = False
+        await message.answer(
+            text='Пожалуйста, введите корректный URL, имеющий точку перед доменом, например ".com"'
+        )
+    if http_ok and dot_ok:
+        await state.update_data(url=url)
+        await message.answer(text="Спасибо! Ваш URL сохранен.")
+        # new_source = SourceCreate(url=url)
+        # await add_source_to_db(source_in=new_source)
+        # Завершаем машину состояний
+        await state.clear()
 
 
 @router.message(StateFilter(FSMFillForm.fill_url))

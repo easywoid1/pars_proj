@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class SourceBase(BaseModel):
     url: str
 
-class SourceCreate(BaseModel):
+class SourceCreate(SourceBase):
     pass
 
 class Source(SourceBase):

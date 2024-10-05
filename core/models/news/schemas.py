@@ -7,5 +7,5 @@ class NewsBase(BaseModel):
     created_at: str
 
 
-class News(NewsBase):
+class News_obj(NewsBase):
     id: int

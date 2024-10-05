@@ -9,7 +9,6 @@ from .commands.echo import (
 from .commands.user_commands import router as news_router
 from .commands.source_commands import router as source_router
 
-
 router = Router(name=__name__)
 
 router.include_router(commands_router)
