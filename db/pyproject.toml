@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "test-project"
+version = "0.1.0"
+description = ""
+authors = ["easywoid0 <gar2719@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+SQLAlchemy = {extras = ["postgresql-asyncpg"], version = "^2.0.35"}
+aiohttp = "^3.10.8"
+python-dotenv = "^1.0.1"
+loguru = "^0.7.2"
+alembic = "^1.13.3"
+pydantic-settings = "^2.5.2"
+feedparser = "^6.0.11"
+fake-useragent = "^1.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

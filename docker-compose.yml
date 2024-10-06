@@ -1,0 +1,10 @@
+version: '0.1'
+services:
+  bot:
+    environment:
+      token: ${token}
+  db:
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST: ${DB_HOST}

@@ -3,6 +3,13 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from config import TOKEN, logger
+
+import sys
+import os
+
+# Добавляем родительскую директорию в sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from db.models import db_helper, Base
 
 from routers import router as main_router
@@ -22,6 +29,16 @@ async def init_db():
         raise
 
 
+async def start_parsing():
+    try:
+        while True:
+            logger.info("start parsing")
+            await run()
+            await asyncio.sleep(60)
+    except Exception as e:
+        logger.error(f"Parsing error: {e}")
+
+
 async def main():
     await init_db()
     bot = Bot(token=TOKEN)
@@ -34,13 +51,7 @@ async def main():
     except Exception as e:
         logger.error(f"Error {e}")
 
-    try:
-        while True:
-            logger.info("start parsing")
-            await asyncio.create_task(run())
-            await asyncio.sleep(60)
-    except Exception as e:
-        logger.error(f"Parsing error: {e}")
+    await asyncio.create_task(start_parsing())
 
     try:
         logger.info("Parsing is starting")
