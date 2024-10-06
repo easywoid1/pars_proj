@@ -19,7 +19,6 @@ async def show_news_for_day(message: types.Message):
 async def show_news_for_hour(message: types.Message):
     news = await get_news_for_hour()
     if not news:
-        await message.answer(text=f'За последний час новостей нет')
+        await message.answer(text=f"За последний час новостей нет")
     else:
         await message.answer(text=f"Новости за последний день: {news}")
-

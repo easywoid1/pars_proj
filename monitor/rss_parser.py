@@ -1,16 +1,18 @@
 from datetime import datetime
 from email.utils import parsedate_to_datetime
 import aiohttp
+import asyncpg.exceptions
 import feedparser
 import asyncio
 
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.news.crud import add_news
 from core.models.news.schemas import NewsCreate
 from core.models.source.crud import get_sources
 from db.models import db_helper
-from utils import get_response, parse_response
+from monitor.utils import get_response, parse_response
 from core.models import News
 from bot.config import logger
 
@@ -35,6 +37,8 @@ async def add_news_to_db(new_in: NewsCreate):
     db_session = db_helper.get_scoped_session()
     try:
         await add_news(session=db_session, new_in=new_in)
+    except IntegrityError:
+        pass
     except Exception as e:
         logger.error(f"Ошибка при обработке URL: {e}")
     finally:
@@ -53,7 +57,6 @@ async def str_time_to_datetime(published: str) -> datetime:
 async def run():
 
     sources: dict = await get_dict_with_sources()
-    # sources = {"1": "https://dostup1.ru/rss/"}
     for url in sources.values():
         response = await get_response(url=url)
         parsed_response = await parse_response(response=response)
@@ -64,10 +67,6 @@ async def run():
                 url=article.link,
                 created_at=await str_time_to_datetime(article.published),
             )
-            print(
-                f"{type(new_in)} | {new_in.name} | {new_in.url} | {new_in.created_at}"
-            )
             await add_news_to_db(new_in=new_in)
 
 
-asyncio.run(run())

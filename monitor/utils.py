@@ -3,6 +3,7 @@ import feedparser
 
 from bot.config import logger
 
+
 def format_article(article):
     return {
         "title": article.title,
@@ -10,6 +11,7 @@ def format_article(article):
         "published": article.published,
         "summary": article.summary,
     }
+
 
 async def get_response(url: str):
     async with aiohttp.ClientSession() as session:
@@ -21,9 +23,12 @@ async def get_response(url: str):
                 logger.error(f"Проблема с получением ответа по url {url} | Error: {e}")
                 return None
 
+
 async def parse_response(response: str):
     parsed_response = feedparser.parse(response)
     return parsed_response
+
+
 # async def get_dict_with_sources()-> dict:
 #     session = db_helper.get_scoped_session()
 #     try:

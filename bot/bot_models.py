@@ -46,7 +46,7 @@ async def get_news_for_day():
     session = db_helper.get_scoped_session()
     try:
         news = await get_news_day(session=session)
-        if len(news) ==0:
+        if len(news) == 0:
             return []
         news_pydantic = []
         for _ in news:

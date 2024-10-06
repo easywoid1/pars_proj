@@ -64,7 +64,9 @@ async def process_url_sent(message: types.Message, state: FSMContext):
                     )
                 except IntegrityError:
                     await db_session.rollback()
-                    await message.answer(text="Извините! Данный URL уже сохранен в списке источников.")
+                    await message.answer(
+                        text="Извините! Данный URL уже сохранен в списке источников."
+                    )
                 finally:
                     await db_session.remove()
 
@@ -80,7 +82,6 @@ async def process_url_sent(message: types.Message, state: FSMContext):
             await message.answer(
                 text="Произошла ошибка при обработке вашего запроса. Выйти: /cancel"
             )
-
 
 
 @router.message(StateFilter(FSMFillForm.fill_url))
