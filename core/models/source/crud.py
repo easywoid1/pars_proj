@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models.source.schemas import SourceCreate
 from db.models import Source
 from db.models.db_helper import db_helper
-from bot.config import logger
+from core.config import logger
 
 from sqlalchemy.exc import SQLAlchemyError
 

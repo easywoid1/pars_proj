@@ -14,7 +14,7 @@ from core.models.source.crud import get_sources
 from db.models import db_helper
 from monitor.utils import get_response, parse_response
 from core.models import News
-from bot.config import logger
+from core.config import logger
 
 
 async def get_dict_with_sources() -> dict:

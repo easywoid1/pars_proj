@@ -1,19 +1,16 @@
 import asyncio
+import os
+import sys
 
 from aiogram import Bot, Dispatcher
-
-from config import TOKEN, logger
-
-import sys
-import os
+from db.models import db_helper, Base
+from bot.routers import router as main_router
+from monitor.rss_parser import run
+from core.config import settings, logger
 
 # Добавляем родительскую директорию в sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from db.models import db_helper, Base
-
-from routers import router as main_router
-from monitor.rss_parser import run
 
 dp = Dispatcher()
 dp.include_router(main_router)
@@ -41,8 +38,11 @@ async def start_parsing():
 
 async def main():
     await init_db()
-    bot = Bot(token=TOKEN)
+    bot = Bot(token=settings.token)
     logger.info("Bot start by button START")
+
+    parsing_task = asyncio.create_task(start_parsing())
+    logger.info("Parsing start")
 
     try:
         await dp.start_polling(bot)
@@ -51,13 +51,8 @@ async def main():
     except Exception as e:
         logger.error(f"Error {e}")
 
-    await asyncio.create_task(start_parsing())
-
-    try:
-        logger.info("Parsing is starting")
-        await run()
-    except Exception as e:
-        logger.error("Problem with parsing")
+    parsing_task.cancel()
+    await parsing_task
 
 
 if __name__ == "__main__":

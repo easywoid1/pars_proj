@@ -1,7 +1,7 @@
 import aiohttp
 import feedparser
 
-from bot.config import logger
+from core.config import logger
 
 
 def format_article(article):

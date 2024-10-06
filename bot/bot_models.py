@@ -1,7 +1,8 @@
 from aiogram.fsm.state import StatesGroup, State
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from bot.config import logger
+
+from core.config import logger
 from core import SourceCreate
 from core.models.news.crud import get_news_hour, get_news_day
 from core.models.news.schemas import NewsGet

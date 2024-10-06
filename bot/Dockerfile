@@ -8,6 +8,6 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-root --no-dev
 
-COPY main.py .
+COPY ../main.py .
 
 CMD ["poetry", "run", "python", "bot.py"]

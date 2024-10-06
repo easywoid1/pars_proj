@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from sqlalchemy.exc import IntegrityError
 import aiohttp
-from bot.config import logger
+from core.config import logger
 
 #
 from bot.bot_models import Buttons_text, FSMFillForm, add_source_to_db
