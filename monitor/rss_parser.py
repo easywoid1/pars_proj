@@ -43,9 +43,7 @@ async def add_news_to_db(new_in: NewsCreate):
 
 async def str_time_to_datetime(published: str) -> datetime:
     try:
-        dt = parsedate_to_datetime(published).astimezone(
-            datetime.now().astimezone().tzinfo
-        )
+        dt = parsedate_to_datetime(published)
         formated_dt = dt.strftime("%Y-%m-%d %H:%M:%S")
         return formated_dt
     except Exception as e:
@@ -54,8 +52,8 @@ async def str_time_to_datetime(published: str) -> datetime:
 
 async def run():
 
-    # sources: dict = await get_dict_with_sources()
-    sources = {"1": "https://dostup1.ru/rss/"}
+    sources: dict = await get_dict_with_sources()
+    # sources = {"1": "https://dostup1.ru/rss/"}
     for url in sources.values():
         response = await get_response(url=url)
         parsed_response = await parse_response(response=response)

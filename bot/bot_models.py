@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from bot.config import logger
 from core import SourceCreate
 from core.models.news.crud import get_news_hour, get_news_day
+from core.models.news.schemas import NewsGet
 from core.models.source.crud import add_source
 from db.models import db_helper
 
@@ -39,7 +40,13 @@ async def get_news_for_hour():
 async def get_news_for_day():
     session = db_helper.get_scoped_session()
     try:
-        await get_news_day(session=session)
+        news = await get_news_day(session=session)
+        news_pydantic = []
+        for _ in news:
+            new = NewsGet.model_validate(_)
+            news_pydantic.append(new)
+        return news_pydantic
+
     except SQLAlchemyError as e:
         logger.error(f"Ошибка при выполнении запроса: {e}")
         raise

@@ -9,14 +9,9 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core import News
-from core.models.news.schemas import NewsCreate
-from core.models.source.schemas import SourceCreate
+from core.models.news.schemas import NewsCreate, News
 from db.models.db_helper import db_helper
-from bot.config import logger
 from db.models.news_db import News as News_db
-
-from sqlalchemy.exc import SQLAlchemyError
 
 
 #
@@ -35,19 +30,37 @@ async def get_news_hour(
     return list(news)
 
 
-async def get_news_day(
-    session: AsyncSession,
-) -> list[News]:
-    session = session
+# async def get_news_day(
+#     session: AsyncSession,
+# ) -> list[News]:
+#     session = session
+#     start_of_day = datetime.combine(datetime.now().date(), time.min)
+#     stmt = (
+#         select(News_db)
+#         .filter(News_db.created_at >= start_of_day)  # Фильтруем по времени
+#         .order_by(News_db.created_at)
+#     )
+#
+#     result: Result = await session.execute(stmt)
+#     news = result.scalars().all()
+#     return list(news)
+
+
+async def get_news_day(session: AsyncSession) -> list[News_db]:
     start_of_day = datetime.combine(datetime.now().date(), time.min)
+    print(f"Start of day: {start_of_day}")  # Отладочное сообщение
+
     stmt = (
         select(News_db)
-        .filter(News_db.created_at >= start_of_day)  # Фильтруем по времени
+        .filter(News_db.created_at >= start_of_day)
         .order_by(News_db.created_at)
     )
 
     result: Result = await session.execute(stmt)
     news = result.scalars().all()
+    print(f"Fetched news: {news}")
+    print(type(news))
+    # Отладочное сообщение
     return list(news)
 
 
