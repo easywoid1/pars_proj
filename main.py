@@ -32,6 +32,8 @@ async def start_parsing():
             logger.info("start parsing")
             await run()
             await asyncio.sleep(60)
+    except asyncio.CancelledError:
+        logger.info("Parsing end by user")
     except Exception as e:
         logger.error(f"Parsing error: {e}")
 
@@ -48,8 +50,10 @@ async def main():
         await dp.start_polling(bot)
     except asyncio.CancelledError as e:
         logger.info("Bot stop by button STOP")
+
     except Exception as e:
         logger.error(f"Error {e}")
+        parsing_task.cancel()
 
     parsing_task.cancel()
     await parsing_task
