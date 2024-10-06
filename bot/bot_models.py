@@ -29,7 +29,12 @@ async def add_source_to_db(url: str, session: AsyncSession):
 async def get_news_for_hour():
     session = db_helper.get_scoped_session()
     try:
-        await get_news_hour(session=session)
+        news = await get_news_hour(session=session)
+        news_pydantic = []
+        for _ in news:
+            new = NewsGet.model_validate(_)
+            news_pydantic.append(new)
+        return news_pydantic
     except SQLAlchemyError as e:
         logger.error(f"Ошибка при выполнении запроса: {e}")
         raise
@@ -41,6 +46,8 @@ async def get_news_for_day():
     session = db_helper.get_scoped_session()
     try:
         news = await get_news_day(session=session)
+        if len(news) ==0:
+            return []
         news_pydantic = []
         for _ in news:
             new = NewsGet.model_validate(_)

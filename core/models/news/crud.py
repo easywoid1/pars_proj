@@ -15,35 +15,18 @@ from db.models.news_db import News as News_db
 
 
 #
-async def get_news_hour(
-    session: AsyncSession,
-) -> list[News]:
-    session = session
-    one_hour_ago = datetime.now() - timedelta(hours=1)
+async def get_news_hour(session: AsyncSession) -> list[News_db]:
+    time_now = datetime.now() - timedelta(hours=1)
+
     stmt = (
         select(News_db)
-        .filter(News_db.created_at >= one_hour_ago)
+        .filter(News_db.created_at >= time_now)
         .order_by(News_db.created_at)
     )
+
     result: Result = await session.execute(stmt)
     news = result.scalars().all()
     return list(news)
-
-
-# async def get_news_day(
-#     session: AsyncSession,
-# ) -> list[News]:
-#     session = session
-#     start_of_day = datetime.combine(datetime.now().date(), time.min)
-#     stmt = (
-#         select(News_db)
-#         .filter(News_db.created_at >= start_of_day)  # Фильтруем по времени
-#         .order_by(News_db.created_at)
-#     )
-#
-#     result: Result = await session.execute(stmt)
-#     news = result.scalars().all()
-#     return list(news)
 
 
 async def get_news_day(session: AsyncSession) -> list[News_db]:
@@ -62,10 +45,6 @@ async def get_news_day(session: AsyncSession) -> list[News_db]:
     print(type(news))
     # Отладочное сообщение
     return list(news)
-
-
-# async def get_source(session: AsyncSession, news_id: int) -> Source | None:
-#     return await session.get(News, news_id)
 
 
 async def add_news(
