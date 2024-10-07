@@ -1,20 +1,14 @@
 from datetime import datetime
 from email.utils import parsedate_to_datetime
-import aiohttp
-import asyncpg.exceptions
-import feedparser
-import asyncio
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.config import logger
 from core.models.news.crud import add_news
 from core.models.news.schemas import NewsCreate
 from core.models.source.crud import get_sources
 from db.models import db_helper
 from monitor.utils import get_response, parse_response
-from core.models import News
-from core.config import logger
 
 
 async def get_dict_with_sources() -> dict:

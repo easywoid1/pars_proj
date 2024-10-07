@@ -50,7 +50,6 @@ async def main():
         await dp.start_polling(bot)
     except asyncio.CancelledError as e:
         logger.info("Bot stop by button STOP")
-
     except Exception as e:
         logger.error(f"Error {e}")
         parsing_task.cancel()

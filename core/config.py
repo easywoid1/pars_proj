@@ -17,10 +17,7 @@ logger.add(
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        extra='allow'
-    )
+    model_config = SettingsConfigDict(env_file=".env", extra="allow")
     db_url: str
     token: str
     db_echo: bool = True  # todo исправить на False
