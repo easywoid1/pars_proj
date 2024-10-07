@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.news.schemas import NewsCreate, News
 from db.models.db_helper import db_helper
-from db.models.news_db import News as News_db
+from db.models import News as News_db
 
 
 #
