@@ -16,7 +16,7 @@
 /core/config.py
 # AWS User-specific
 .idea/**/aws.xml
-
+/core/debug.log
 # Generated files
 .idea/**/contentModel.xml
 
